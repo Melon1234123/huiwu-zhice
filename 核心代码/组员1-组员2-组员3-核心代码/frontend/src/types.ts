@@ -1,0 +1,13 @@
+export type Page = 'overview'|'documents'|'qa'|'planning'|'tasks'|'budget'|'copy'|'review';
+export type TaskStatus = 'todo'|'doing'|'done';
+export type Project = {name:string;audience:string;date:string;location:string;attendees:number;budget_limit:number;goal:string};
+export type Task = {id:string;title:string;owner:string;due:string;status:TaskStatus};
+export type Document = {id:string;name:string;content:string;created_at:string};
+export type BudgetItem = {name:string;qty:number;unit_price:number};
+export type Budget = {items:BudgetItem[];reserve_rate:number;subtotal:number;reserve:number;total:number;remaining:number};
+export type Kind = 'plan'|'agenda'|'risks'|'tasks'|'copy'|'review';
+export type Output = {content:string;mode:'model'|'rule';created_at:string};
+export type State = {project:Project;documents:Document[];tasks:Task[];budget:Budget;outputs:Partial<Record<Kind,Output>>;activity:{id:string;action:string;detail:string;created_at:string}[];settings:{configured:boolean;model:string;mode:'model'|'rule'}};
+export type Answer = {answer:string;citations:{id:string;title:string;excerpt:string}[];mode:'model'|'rule';source:'model'|'rule_retrieval'|'retrieval_refusal'|'guard'};
+export type Change = (path:string,body?:unknown,method?:string)=>Promise<State>;
+export type Shared = {state:State;change:Change;notify:(s:string)=>void};

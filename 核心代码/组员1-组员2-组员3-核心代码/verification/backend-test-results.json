@@ -1,0 +1,333 @@
+{
+  "success": true,
+  "tests_run": 65,
+  "passed": 65,
+  "scope": "temporary SQLite databases; mocked model transport; isolated local HTTP server; no real model calls",
+  "cases": [
+    {
+      "test": "__main__.AppChecks.test_agenda_has_specific_instruction_without_previous_outputs",
+      "status": "passed",
+      "seconds": 0.0068
+    },
+    {
+      "test": "__main__.AppChecks.test_all_project_fields_required",
+      "status": "passed",
+      "seconds": 0.0015
+    },
+    {
+      "test": "__main__.AppChecks.test_bad_model_task_rolls_back",
+      "status": "passed",
+      "seconds": 0.002
+    },
+    {
+      "test": "__main__.AppChecks.test_budget_decimal_rounding",
+      "status": "passed",
+      "seconds": 0.002
+    },
+    {
+      "test": "__main__.AppChecks.test_budget_empty_is_valid",
+      "status": "passed",
+      "seconds": 0.0014
+    },
+    {
+      "test": "__main__.AppChecks.test_budget_fraction_quantity_rejected",
+      "status": "passed",
+      "seconds": 0.0012
+    },
+    {
+      "test": "__main__.AppChecks.test_budget_negative_price_rejected",
+      "status": "passed",
+      "seconds": 0.0012
+    },
+    {
+      "test": "__main__.AppChecks.test_budget_overrun_case",
+      "status": "passed",
+      "seconds": 0.0013
+    },
+    {
+      "test": "__main__.AppChecks.test_budget_price_precision_rejected",
+      "status": "passed",
+      "seconds": 0.0014
+    },
+    {
+      "test": "__main__.AppChecks.test_budget_rate_above_one_rejected",
+      "status": "passed",
+      "seconds": 0.0013
+    },
+    {
+      "test": "__main__.AppChecks.test_budget_rounds_reserve_half_up",
+      "status": "passed",
+      "seconds": 0.0014
+    },
+    {
+      "test": "__main__.AppChecks.test_concurrent_mutations_do_not_lose_tasks",
+      "status": "passed",
+      "seconds": 0.012
+    },
+    {
+      "test": "__main__.AppChecks.test_copy_requires_three_channels",
+      "status": "passed",
+      "seconds": 0.0015
+    },
+    {
+      "test": "__main__.AppChecks.test_csv_formula_injection_escaped",
+      "status": "passed",
+      "seconds": 0.0014
+    },
+    {
+      "test": "__main__.AppChecks.test_date_must_exist",
+      "status": "passed",
+      "seconds": 0.001
+    },
+    {
+      "test": "__main__.AppChecks.test_document_crud_preserves_plain_text",
+      "status": "passed",
+      "seconds": 0.0014
+    },
+    {
+      "test": "__main__.AppChecks.test_document_empty_rejected",
+      "status": "passed",
+      "seconds": 0.0011
+    },
+    {
+      "test": "__main__.AppChecks.test_document_limit_rejected",
+      "status": "passed",
+      "seconds": 0.0014
+    },
+    {
+      "test": "__main__.AppChecks.test_extremely_large_integer_rejected_cleanly",
+      "status": "passed",
+      "seconds": 0.0009
+    },
+    {
+      "test": "__main__.AppChecks.test_generation_failure_preserves_previous_output",
+      "status": "passed",
+      "seconds": 0.0014
+    },
+    {
+      "test": "__main__.AppChecks.test_guard_no_model_call",
+      "status": "passed",
+      "seconds": 0.0011
+    },
+    {
+      "test": "__main__.AppChecks.test_infinite_integer_rejected",
+      "status": "passed",
+      "seconds": 0.0012
+    },
+    {
+      "test": "__main__.AppChecks.test_initial_budget_exact",
+      "status": "passed",
+      "seconds": 0.0009
+    },
+    {
+      "test": "__main__.AppChecks.test_invalid_project_rolls_back",
+      "status": "passed",
+      "seconds": 0.0014
+    },
+    {
+      "test": "__main__.AppChecks.test_json_export_roundtrip",
+      "status": "passed",
+      "seconds": 0.0011
+    },
+    {
+      "test": "__main__.AppChecks.test_markdown_export_includes_content",
+      "status": "passed",
+      "seconds": 0.0016
+    },
+    {
+      "test": "__main__.AppChecks.test_missing_delete_not_found",
+      "status": "passed",
+      "seconds": 0.001
+    },
+    {
+      "test": "__main__.AppChecks.test_model_context_contains_numbered_sources",
+      "status": "passed",
+      "seconds": 0.0019
+    },
+    {
+      "test": "__main__.AppChecks.test_model_failure_never_rule_success",
+      "status": "passed",
+      "seconds": 0.0011
+    },
+    {
+      "test": "__main__.AppChecks.test_model_task_json_validated_and_deduplicated",
+      "status": "passed",
+      "seconds": 0.0018
+    },
+    {
+      "test": "__main__.AppChecks.test_project_budget_recalculates_remaining",
+      "status": "passed",
+      "seconds": 0.0015
+    },
+    {
+      "test": "__main__.AppChecks.test_project_change_during_generation_rejects_stale_save",
+      "status": "passed",
+      "seconds": 0.0055
+    },
+    {
+      "test": "__main__.AppChecks.test_reopen_persists_changes",
+      "status": "passed",
+      "seconds": 0.0021
+    },
+    {
+      "test": "__main__.AppChecks.test_reset_restores_initial_state",
+      "status": "passed",
+      "seconds": 0.0038
+    },
+    {
+      "test": "__main__.AppChecks.test_retrieval_original_citation",
+      "status": "passed",
+      "seconds": 0.0016
+    },
+    {
+      "test": "__main__.AppChecks.test_retrieval_refusal_no_model_call",
+      "status": "passed",
+      "seconds": 0.0014
+    },
+    {
+      "test": "__main__.AppChecks.test_review_contains_previous_outputs_and_evidence_instruction",
+      "status": "passed",
+      "seconds": 0.0022
+    },
+    {
+      "test": "__main__.AppChecks.test_six_rule_generation_paths",
+      "status": "passed",
+      "seconds": 0.0039
+    },
+    {
+      "test": "__main__.AppChecks.test_task_create_patch_delete",
+      "status": "passed",
+      "seconds": 0.0018
+    },
+    {
+      "test": "__main__.AppChecks.test_task_generation_idempotent_preserves_status",
+      "status": "passed",
+      "seconds": 0.0019
+    },
+    {
+      "test": "__main__.AppChecks.test_task_normalized_duplicate_rejected",
+      "status": "passed",
+      "seconds": 0.0013
+    },
+    {
+      "test": "__main__.AppChecks.test_task_unknown_status_rejected",
+      "status": "passed",
+      "seconds": 0.001
+    },
+    {
+      "test": "__main__.AppChecks.test_unknown_export_format_rejected",
+      "status": "passed",
+      "seconds": 0.0011
+    },
+    {
+      "test": "__main__.AppChecks.test_unknown_generation_kind_rejected",
+      "status": "passed",
+      "seconds": 0.0009
+    },
+    {
+      "test": "__main__.HTTPChecks.test_cross_origin_mutation_rejected",
+      "status": "passed",
+      "seconds": 0.0123
+    },
+    {
+      "test": "__main__.HTTPChecks.test_crud_and_delete_without_body",
+      "status": "passed",
+      "seconds": 0.0028
+    },
+    {
+      "test": "__main__.HTTPChecks.test_dns_rebinding_host_rejected",
+      "status": "passed",
+      "seconds": 0.0004
+    },
+    {
+      "test": "__main__.HTTPChecks.test_export_has_download_header",
+      "status": "passed",
+      "seconds": 0.0007
+    },
+    {
+      "test": "__main__.HTTPChecks.test_health_and_state_shape",
+      "status": "passed",
+      "seconds": 0.0009
+    },
+    {
+      "test": "__main__.HTTPChecks.test_invalid_json_rejected",
+      "status": "passed",
+      "seconds": 0.0005
+    },
+    {
+      "test": "__main__.HTTPChecks.test_nan_json_rejected",
+      "status": "passed",
+      "seconds": 0.0004
+    },
+    {
+      "test": "__main__.HTTPChecks.test_private_sources_not_served",
+      "status": "passed",
+      "seconds": 0.0016
+    },
+    {
+      "test": "__main__.HTTPChecks.test_static_and_security_headers",
+      "status": "passed",
+      "seconds": 0.0027
+    },
+    {
+      "test": "__main__.HTTPChecks.test_video_byte_ranges",
+      "status": "passed",
+      "seconds": 0.0018
+    },
+    {
+      "test": "__main__.HTTPChecks.test_video_invalid_range",
+      "status": "passed",
+      "seconds": 0.002
+    },
+    {
+      "test": "__main__.HTTPChecks.test_wrong_content_type_rejected",
+      "status": "passed",
+      "seconds": 0.0004
+    },
+    {
+      "test": "__main__.ProviderChecks.test_configuration_priority",
+      "status": "passed",
+      "seconds": 0.0014
+    },
+    {
+      "test": "__main__.ProviderChecks.test_deepseek_uses_configured_thinking_and_limit",
+      "status": "passed",
+      "seconds": 0.003
+    },
+    {
+      "test": "__main__.ProviderChecks.test_empty_model_content_rejected",
+      "status": "passed",
+      "seconds": 0.0014
+    },
+    {
+      "test": "__main__.ProviderChecks.test_finish_reason_length_rejected",
+      "status": "passed",
+      "seconds": 0.0012
+    },
+    {
+      "test": "__main__.ProviderChecks.test_http_error_does_not_expose_body_or_key",
+      "status": "passed",
+      "seconds": 0.0006
+    },
+    {
+      "test": "__main__.ProviderChecks.test_other_model_omits_deepseek_parameter",
+      "status": "passed",
+      "seconds": 0.0016
+    },
+    {
+      "test": "__main__.ProviderChecks.test_redirect_does_not_forward_credentials",
+      "status": "passed",
+      "seconds": 0.0
+    },
+    {
+      "test": "__main__.ProviderChecks.test_remote_plain_http_rejected",
+      "status": "passed",
+      "seconds": 0.0001
+    },
+    {
+      "test": "__main__.ProviderChecks.test_settings_do_not_expose_credentials_or_endpoint",
+      "status": "passed",
+      "seconds": 0.0
+    }
+  ]
+}

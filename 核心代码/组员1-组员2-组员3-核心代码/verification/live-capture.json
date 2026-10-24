@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "origin": "http://127.0.0.1:8765",
+  "model": "deepseek-v4.1-flash",
+  "source": "全新构建实际应用截图；问答为现场真实模型调用，其余为本轮已保存真实输出。",
+  "budget_case": {
+    "total": 3472,
+    "overrun": 472
+  },
+  "runtime_errors": []
+}

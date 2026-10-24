@@ -1,0 +1,85 @@
+{
+  "tests": [
+    {
+      "name": "四种尺寸全屏首屏 固定导航 与无横向溢出",
+      "pass": true
+    },
+    {
+      "name": "静音背景视频 播放暂停 与离屏暂停",
+      "pass": true
+    },
+    {
+      "name": "页内导航保持首页 并展开案例与指南",
+      "pass": true
+    },
+    {
+      "name": "开始筹备打开编辑且不重置当前项目",
+      "pass": true
+    },
+    {
+      "name": "功能入口直达日程和风险标签",
+      "pass": true
+    },
+    {
+      "name": "首页与工作台来回切换保留预算草稿",
+      "pass": true
+    },
+    {
+      "name": "减少动态与所有媒体失败仍可操作",
+      "pass": true
+    },
+    {
+      "name": "手机导航与键盘指南弹窗",
+      "pass": true
+    }
+  ],
+  "layouts": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "document": 1920,
+      "hero": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "width": 1700,
+      "height": 1000,
+      "document": 1700,
+      "hero": {
+        "x": 0,
+        "y": 0,
+        "width": 1700,
+        "height": 1000
+      }
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "document": 1440,
+      "hero": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "document": 390,
+      "hero": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844
+      }
+    }
+  ],
+  "runtime_errors": [],
+  "scope": "Isolated local rules-mode database; no remote model calls; screenshot assertions use actual rendered UI.",
+  "pass": true
+}

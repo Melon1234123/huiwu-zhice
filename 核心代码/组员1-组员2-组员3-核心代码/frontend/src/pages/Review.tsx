@@ -1,0 +1,5 @@
+import type {Shared} from '../types';
+import {PageHeader} from '../components/Common';
+import {Generator} from '../components/Generator';
+import {Icon} from '../components/Icon';
+export function Review(props:Shared){return <><PageHeader eyebrow="内容与交付" title="在执行前，再检查一遍" description="结合资料、任务与预算审阅当前方案，并导出可继续协作的项目文件。"/><div className="export-bar"><div><span className="export-icon"><Icon name="download" size={22}/></span><span><strong>导出当前项目</strong><small>下载当前已保存的信息，预算草稿请先保存</small></span></div><div className="export-links"><a href="/api/export?format=md"><Icon name="documents" size={16}/>项目文档 .md</a><a href="/api/export?format=json"><Icon name="download" size={16}/>完整数据 .json</a><a href="/api/export?format=csv"><Icon name="budget" size={16}/>任务清单 .csv</a></div></div><Generator {...props} kind="review" title="活动审阅" description="检查任务缺口、预算与资料约束的冲突。" placeholder="例如：重点检查现场人员安排与预算是否足够。"><div className="generation-tip"><strong>审阅范围</strong><p>{props.state.documents.length} 份资料、{props.state.tasks.length} 项任务与已保存的费用明细。结果是辅助建议，执行责任由组织者确认。</p></div></Generator></>}

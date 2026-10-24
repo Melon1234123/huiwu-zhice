@@ -1,0 +1,290 @@
+{
+  "origin": "http://127.0.0.1:8766",
+  "tests": [
+    {
+      "name": "活动信息编辑与刷新持久化",
+      "pass": true
+    },
+    {
+      "name": "资料导入 原文查看 与删除确认",
+      "pass": true
+    },
+    {
+      "name": "原文检索问答与可展开引用",
+      "pass": true
+    },
+    {
+      "name": "请求失败显示错误并保留问题 可重试",
+      "pass": true
+    },
+    {
+      "name": "Markdown原始HTML与危险链接不会执行",
+      "pass": true
+    },
+    {
+      "name": "策划 日程 风险 文案 审阅生成结果持久化",
+      "pass": true
+    },
+    {
+      "name": "三格式导出可下载且JSON数据完整",
+      "pass": true
+    },
+    {
+      "name": "任务新建 编辑 搜索 状态流转 与删除",
+      "pass": true
+    },
+    {
+      "name": "预算草稿跨页保留 计算超限 保存与恢复",
+      "pass": true
+    },
+    {
+      "name": "四尺寸八页面的可读性与横向布局",
+      "pass": true
+    },
+    {
+      "name": "减少动态与禁用媒体/WebGL下内容可用",
+      "pass": true
+    },
+    {
+      "name": "关键导航支持键盘焦点",
+      "pass": true
+    },
+    {
+      "name": "恢复示例需确认 且取消保留数据",
+      "pass": true
+    }
+  ],
+  "runtime_errors": [],
+  "console_errors": [
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway)",
+    "Failed to load resource: net::ERR_FAILED"
+  ],
+  "layout": [
+    {
+      "width": 1600,
+      "page": "overview",
+      "viewport": 1600,
+      "document": 1600,
+      "body": 1600
+    },
+    {
+      "width": 1600,
+      "page": "documents",
+      "viewport": 1600,
+      "document": 1600,
+      "body": 1600
+    },
+    {
+      "width": 1600,
+      "page": "qa",
+      "viewport": 1600,
+      "document": 1600,
+      "body": 1600
+    },
+    {
+      "width": 1600,
+      "page": "planning",
+      "viewport": 1600,
+      "document": 1600,
+      "body": 1600
+    },
+    {
+      "width": 1600,
+      "page": "tasks",
+      "viewport": 1600,
+      "document": 1600,
+      "body": 1600
+    },
+    {
+      "width": 1600,
+      "page": "budget",
+      "viewport": 1600,
+      "document": 1600,
+      "body": 1600
+    },
+    {
+      "width": 1600,
+      "page": "copy",
+      "viewport": 1600,
+      "document": 1600,
+      "body": 1600
+    },
+    {
+      "width": 1600,
+      "page": "review",
+      "viewport": 1600,
+      "document": 1600,
+      "body": 1600
+    },
+    {
+      "width": 1440,
+      "page": "overview",
+      "viewport": 1440,
+      "document": 1440,
+      "body": 1440
+    },
+    {
+      "width": 1440,
+      "page": "documents",
+      "viewport": 1440,
+      "document": 1440,
+      "body": 1440
+    },
+    {
+      "width": 1440,
+      "page": "qa",
+      "viewport": 1440,
+      "document": 1440,
+      "body": 1440
+    },
+    {
+      "width": 1440,
+      "page": "planning",
+      "viewport": 1440,
+      "document": 1440,
+      "body": 1440
+    },
+    {
+      "width": 1440,
+      "page": "tasks",
+      "viewport": 1440,
+      "document": 1440,
+      "body": 1440
+    },
+    {
+      "width": 1440,
+      "page": "budget",
+      "viewport": 1440,
+      "document": 1440,
+      "body": 1440
+    },
+    {
+      "width": 1440,
+      "page": "copy",
+      "viewport": 1440,
+      "document": 1440,
+      "body": 1440
+    },
+    {
+      "width": 1440,
+      "page": "review",
+      "viewport": 1440,
+      "document": 1440,
+      "body": 1440
+    },
+    {
+      "width": 1920,
+      "page": "overview",
+      "viewport": 1920,
+      "document": 1920,
+      "body": 1920
+    },
+    {
+      "width": 1920,
+      "page": "documents",
+      "viewport": 1920,
+      "document": 1920,
+      "body": 1920
+    },
+    {
+      "width": 1920,
+      "page": "qa",
+      "viewport": 1920,
+      "document": 1920,
+      "body": 1920
+    },
+    {
+      "width": 1920,
+      "page": "planning",
+      "viewport": 1920,
+      "document": 1920,
+      "body": 1920
+    },
+    {
+      "width": 1920,
+      "page": "tasks",
+      "viewport": 1920,
+      "document": 1920,
+      "body": 1920
+    },
+    {
+      "width": 1920,
+      "page": "budget",
+      "viewport": 1920,
+      "document": 1920,
+      "body": 1920
+    },
+    {
+      "width": 1920,
+      "page": "copy",
+      "viewport": 1920,
+      "document": 1920,
+      "body": 1920
+    },
+    {
+      "width": 1920,
+      "page": "review",
+      "viewport": 1920,
+      "document": 1920,
+      "body": 1920
+    },
+    {
+      "width": 390,
+      "page": "overview",
+      "viewport": 390,
+      "document": 390,
+      "body": 390
+    },
+    {
+      "width": 390,
+      "page": "documents",
+      "viewport": 390,
+      "document": 390,
+      "body": 390
+    },
+    {
+      "width": 390,
+      "page": "qa",
+      "viewport": 390,
+      "document": 390,
+      "body": 390
+    },
+    {
+      "width": 390,
+      "page": "planning",
+      "viewport": 390,
+      "document": 390,
+      "body": 390
+    },
+    {
+      "width": 390,
+      "page": "tasks",
+      "viewport": 390,
+      "document": 390,
+      "body": 390
+    },
+    {
+      "width": 390,
+      "page": "budget",
+      "viewport": 390,
+      "document": 390,
+      "body": 390
+    },
+    {
+      "width": 390,
+      "page": "copy",
+      "viewport": 390,
+      "document": 390,
+      "body": 390
+    },
+    {
+      "width": 390,
+      "page": "review",
+      "viewport": 390,
+      "document": 390,
+      "body": 390
+    }
+  ],
+  "timestamp": "2026-10-23T19:24:42.583Z",
+  "pass": true
+}
