@@ -3,7 +3,7 @@ import csv
 import io
 import json
 from . import validation as v
-from .generation import KINDS,generate,task_key
+from .generation import KINDS,generate,generation_context,task_key
 from .retrieval import ask
 from .storage import new_id,now
 
@@ -64,8 +64,15 @@ class Service:
         return self.result(self.store.mutate('更新任务' if ident else '新增任务',v.text(data.get('title','任务'),'任务名称',200),change))
 
     def save_budget(self,data):
+        v.obj(data)
         def change(state):
-            state['budget']=v.budget(data,state['project']['budget_limit'])
+            limit = state['project']['budget_limit']
+            incoming = v.budget(data, limit)
+            if 'base_budget' in data:
+                baseline = v.budget(data['base_budget'], limit)
+                if baseline != state['budget'] and incoming != state['budget']:
+                    raise v.BudgetConflict('预算已在其他窗口更新。当前草稿仍保留，请核对最新预算。')
+            state['budget'] = incoming
         return self.result(self.store.mutate('更新预算','费用明细与预备金已重新计算。',change))
 
     def ask(self,data):
@@ -82,9 +89,10 @@ class Service:
         before=self.store.read()
         content,mode=generate(kind,before,instruction,self.provider)
         def change(state):
-            for key in ('project','documents','budget'):
-                if state[key]!=before[key]:
-                    raise v.UserError('活动或资料在生成期间已更新，请重新生成以采用最新信息。')
+            if generation_context(kind, state, mode) != generation_context(kind, before, mode):
+                raise v.UserError('生成期间所依据的活动信息、资料、预算、任务或草案已更新，请重新生成。')
+            if kind != 'tasks' and state['outputs'].get(kind) != before['outputs'].get(kind):
+                raise v.UserError('该类草案已有新版本，请查看最新草案后重新生成。')
             if kind=='tasks':
                 keys={task_key(t['title']) for t in state['tasks']}
                 count=0

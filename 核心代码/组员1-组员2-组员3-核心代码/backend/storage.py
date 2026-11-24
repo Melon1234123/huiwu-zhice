@@ -1,5 +1,4 @@
 """A single SQLite transaction per mutation, guarded across HTTP workers."""
-import copy
 import datetime as dt
 import json
 from pathlib import Path
@@ -37,6 +36,13 @@ def seed():
     return data
 
 
+class Snapshot(dict):
+    """Revision is HTTP metadata, so exports and existing JSON clients keep their shape."""
+    def __init__(self, data, revision):
+        super().__init__(data)
+        self.revision = revision
+
+
 class Store:
     def __init__(self, path):
         self.path = str(Path(path).expanduser().resolve())
@@ -44,26 +50,36 @@ class Store:
         self.lock = threading.RLock()
         with self._db() as db:
             db.execute('PRAGMA journal_mode=WAL')
-            db.execute('CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), value TEXT NOT NULL)')
-            db.execute('INSERT OR IGNORE INTO state VALUES (1, ?)', (json.dumps(seed(), ensure_ascii=False),))
+            db.execute('BEGIN IMMEDIATE')
+            db.execute('CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), value TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 0)')
+            if 'revision' not in {column[1] for column in db.execute('PRAGMA table_info(state)')}:
+                db.execute('ALTER TABLE state ADD COLUMN revision INTEGER NOT NULL DEFAULT 0')
+            db.execute('INSERT OR IGNORE INTO state (id, value) VALUES (1, ?)', (json.dumps(seed(), ensure_ascii=False),))
 
     def _db(self):
         return sqlite3.connect(self.path, timeout=10)
 
+    @staticmethod
+    def _snapshot(db):
+        value, revision = db.execute('SELECT value, revision FROM state WHERE id=1').fetchone()
+        return Snapshot(json.loads(value), revision)
+
     def read(self):
         with self.lock, self._db() as db:
-            return json.loads(db.execute('SELECT value FROM state WHERE id=1').fetchone()[0])
+            return self._snapshot(db)
 
     def mutate(self, action, detail, fn):
         with self.lock, self._db() as db:
             db.execute('BEGIN IMMEDIATE')
-            state = json.loads(db.execute('SELECT value FROM state WHERE id=1').fetchone()[0])
+            state = self._snapshot(db)
             fn(state)
             state['budget'] = budget(state['budget'], state['project']['budget_limit'])
             state['activity'].insert(0, dict(id=new_id(), action=action, detail=detail, created_at=now()))
             state['activity'] = state['activity'][:200]
-            db.execute('UPDATE state SET value=? WHERE id=1',(json.dumps(state, ensure_ascii=False, allow_nan=False),))
-            return copy.deepcopy(state)
+            state.revision += 1
+            db.execute('UPDATE state SET value=?, revision=? WHERE id=1',
+                       (json.dumps(state, ensure_ascii=False, allow_nan=False), state.revision))
+            return state
 
     def reset(self):
         fresh = seed()

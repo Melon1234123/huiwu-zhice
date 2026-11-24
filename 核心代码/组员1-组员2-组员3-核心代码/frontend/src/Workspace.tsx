@@ -1,8 +1,7 @@
-import {useCallback,useEffect,useState} from 'react';
-import type {Page,State} from './types';
-import {api} from './api';
-import {Button,ErrorBox,Modal,Spinner} from './components/Common';
+import {useCallback, useEffect, useState} from 'react';
+import {Button, ErrorBox, Modal, Spinner} from './components/Common';
 import {Icon} from './components/Icon';
+import {QuickFind} from './components/QuickFind';
 import {Overview} from './pages/Overview';
 import {Documents} from './pages/Documents';
 import {QA} from './pages/QA';
@@ -11,16 +10,118 @@ import {Tasks} from './pages/Tasks';
 import {Budget} from './pages/Budget';
 import {Copy} from './pages/Copy';
 import {Review} from './pages/Review';
-const nav:{page:Page;name:string;group:string}[]=[{page:'overview',name:'活动总览',group:'工作空间'},{page:'documents',name:'资料库',group:'资料与知识'},{page:'qa',name:'知识问答',group:'资料与知识'},{page:'planning',name:'策划方案',group:'策划与执行'},{page:'tasks',name:'任务看板',group:'策划与执行'},{page:'budget',name:'费用预算',group:'策划与执行'},{page:'copy',name:'宣传文案',group:'内容与交付'},{page:'review',name:'审阅与导出',group:'内容与交付'}];
-function hashPage():Page{const p=window.location.hash.slice(1).split('/')[0];return nav.some(n=>n.page===p)?p as Page:'overview'}
-export default function Workspace({startEditRequest=0}:{startEditRequest?:number}){const [state,setState]=useState<State|null>(null);const [page,setPage]=useState<Page>(hashPage);const [loading,setLoading]=useState(true);const [error,setError]=useState('');const [toast,setToast]=useState('');const [menu,setMenu]=useState(false);const [reset,setReset]=useState(false);const [resetError,setResetError]=useState('');const [resetting,setResetting]=useState(false);const [resetVersion,setResetVersion]=useState(0);
-const refresh=useCallback(async()=>{setLoading(true);setError('');try{setState(await api<State>('/api/state'))}catch(e){setError((e as Error).message)}finally{setLoading(false)}},[]);
-useEffect(()=>{void refresh();const listener=()=>{setPage(hashPage());setMenu(false);window.scrollTo(0,0)};window.addEventListener('hashchange',listener);return()=>window.removeEventListener('hashchange',listener)},[refresh]);
-useEffect(()=>{if(!toast)return;const timer=window.setTimeout(()=>setToast(''),4500);return()=>clearTimeout(timer)},[toast]);
-useEffect(()=>{document.title=`${nav.find(n=>n.page===page)?.name} · 会务智策`},[page]);
-const change=useCallback(async(path:string,body?:unknown,method?:string)=>{const next=await api<State>(path,body,method);setState(next);return next},[]);
-const notify=useCallback((message:string)=>setToast(message),[]);
-function navigate(p:Page){window.location.hash=p;setMenu(false);if(p===page)window.scrollTo(0,0)}
-async function doReset(){setResetting(true);setResetError('');try{await change('/api/reset',{});setReset(false);setResetVersion(v=>v+1);notify('已重置为虚构教学示例');navigate('overview')}catch(e){setResetError((e as Error).message)}finally{setResetting(false)}}
-const current=nav.find(n=>n.page===page)!;
-return <div className="app-shell"><a className="skip-link" href="#main-content" onClick={e=>{e.preventDefault();document.getElementById('main-content')?.focus()}}>跳到主要内容</a>{menu&&<button className="nav-overlay" aria-label="关闭导航" onClick={()=>setMenu(false)}/>}<aside className={`sidebar ${menu?'open':''}`} aria-label="主导航"><a className="brand" href="#home" aria-label="返回产品首页"><span className="brand-mark"><Icon name="planning" size={24}/><i/></span><span>会务智策<small>活动运营工作台</small></span></a><div className="workspace-label"><span className="workspace-avatar">会</span><span><strong>校园活动空间</strong><small>示例项目 · 个人工作区</small></span><Icon name="chevron" size={15}/></div><nav>{nav.map((item,i)=><div key={item.page}>{(i===0||nav[i-1].group!==item.group)&&<div className="nav-group">{item.group}</div>}<a href={`#${item.page}`} data-page={item.page} className={`nav-item ${page===item.page?'active':''}`} aria-current={page===item.page?'page':undefined} onClick={()=>setMenu(false)}><Icon name={item.page} size={20}/><span>{item.name}</span>{item.page==='tasks'&&state&&<span className="nav-count">{state.tasks.filter(t=>t.status!=='done').length}</span>}{page===item.page&&<span className="nav-active-dot"/>}</a></div>)}</nav><div className="sidebar-bottom"><div className="sidebar-help"><span><Icon name="spark" size={19}/></span><strong>让筹备更从容</strong><p>整理资料、推进任务，<br/>把精力留给活动本身。</p></div><button className="reset-link" onClick={()=>{setReset(true);setResetError('')}}><Icon name="refresh" size={16}/>重置演示数据</button><div className="sidebar-user"><span>演</span><div><strong>演示工作区</strong><small>所有示例内容均为虚构</small></div></div></div></aside><div className="main-shell"><header className="topbar"><div className="breadcrumb"><button className="icon-button mobile-menu" aria-label="打开导航" aria-expanded={menu} onClick={()=>setMenu(!menu)}><Icon name="menu"/></button><span>工作空间</span><Icon name="chevron" size={14}/><strong>{current.name}</strong></div><div className="topbar-right"><span className="demo-tag">教学演示</span><span id="mode-badge" className="connection"><span className={state?.settings.configured?'':'rule'}/>{state?.settings.configured?'真实模型模式':'本地规则模式'}</span><span className="top-avatar">演</span></div></header><main id="main-content" tabIndex={-1}>{loading&&!state?<div className="loading-screen"><Spinner/><h2>正在打开活动工作台</h2><p>读取活动资料与筹备进度…</p></div>:error&&!state?<div className="load-error"><Icon name="info" size={32}/><h2>工作台暂时无法连接</h2><ErrorBox error={error}/><Button icon="refresh" onClick={()=>void refresh()}>重新加载</Button></div>:state&&<div key={resetVersion}>{nav.map(item=><section key={item.page} className="page" hidden={page!==item.page} aria-label={item.name}>{item.page==='overview'?<Overview startEditRequest={startEditRequest} state={state} change={change} notify={notify} navigate={navigate}/>:item.page==='documents'?<Documents state={state} change={change} notify={notify}/>:item.page==='qa'?<QA state={state} change={change} notify={notify}/>:item.page==='planning'?<Planning state={state} change={change} notify={notify}/>:item.page==='tasks'?<Tasks state={state} change={change} notify={notify}/>:item.page==='budget'?<Budget state={state} change={change} notify={notify}/>:item.page==='copy'?<Copy state={state} change={change} notify={notify}/>:<Review state={state} change={change} notify={notify}/>}</section>)}</div>}</main><footer className="app-footer"><span>会务智策 · 活动运营工作台</span><span>虚构教学示例 · 生成结果需人工核对</span></footer></div>{toast&&<div className="toast" role="status"><span><Icon name="check" size={17}/></span>{toast}<button className="icon-button" aria-label="关闭提示" onClick={()=>setToast('')}><Icon name="close" size={16}/></button></div>}{reset&&<Modal title="重置演示数据？" onClose={()=>setReset(false)}><p className="modal-copy">当前活动、导入的资料、任务、预算和生成内容将被清空，并恢复为虚构教学示例。此操作无法撤销。</p><ErrorBox error={resetError}/><div className="form-actions"><Button variant="secondary" onClick={()=>setReset(false)}>保留当前数据</Button><Button variant="danger" disabled={resetting} onClick={()=>void doReset()}>{resetting?'重置中…':'确认重置'}</Button></div></Modal>}</div>}
+import {currentPage, navigation} from './navigation';
+import type {Change, Page, State} from './types';
+
+type Props = {
+  active: boolean;
+  state: State | null;
+  error: string;
+  refresh: () => Promise<void>;
+  change: Change;
+  startEditRequest: number;
+  consumeEdit: () => void;
+};
+const modules = {documents: Documents, qa: QA, planning: Planning, tasks: Tasks, budget: Budget, copy: Copy, review: Review};
+const isMac = /Mac/.test(navigator.platform);
+
+export default function Workspace({active, state, error, refresh, change, startEditRequest, consumeEdit}: Props) {
+  const [page, setPage] = useState<Page>(currentPage);
+  const [toast, setToast] = useState<{message: string} | null>(null);
+  const [menu, setMenu] = useState(false);
+  const [find, setFind] = useState(false);
+  const [reset, setReset] = useState(false);
+  const [resetError, setResetError] = useState('');
+  const [resetting, setResetting] = useState(false);
+  const [resetVersion, setResetVersion] = useState(0);
+  const current = navigation.find(n => n.page === page)!;
+  const notify = useCallback((message: string) => setToast({message}), []);
+  const notifyClose = () => setToast(null);
+
+  useEffect(() => {
+    const route = () => {setPage(currentPage()); setMenu(false); setFind(false); setReset(false)};
+    window.addEventListener('hashchange', route);
+    return () => window.removeEventListener('hashchange', route);
+  }, []);
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(null), 4500);
+    return () => clearTimeout(timer);
+  }, [toast]);
+  useEffect(() => {
+    if (!active || !state) return;
+    function keydown(event: KeyboardEvent) {
+      if (event.isComposing || event.defaultPrevented) return;
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k' && !event.altKey && !event.shiftKey) {
+        if (document.querySelector('dialog[open]') && !find) return;
+        event.preventDefault();
+        setFind(open => !open);
+      }
+      if (event.key === 'Escape') setMenu(false);
+    }
+    window.addEventListener('keydown', keydown);
+    return () => window.removeEventListener('keydown', keydown);
+  }, [active, state, find]);
+  async function doReset() {
+    setResetting(true); setResetError('');
+    try {
+      await change('/api/reset', {});
+      setReset(false); setResetVersion(v => v + 1); notify('已重置为虚构教学示例');
+      window.location.hash = 'overview';
+    } catch (error) {setResetError((error as Error).message)}
+    finally {setResetting(false)}
+  }
+
+  return <div className="app-shell">
+    <a className="skip-link" href="#main-content" onClick={e => {e.preventDefault(); document.getElementById('main-content')?.focus()}}>跳到主要内容</a>
+    {menu && <button className="nav-overlay" aria-label="关闭导航" onClick={() => setMenu(false)}/>}
+    <aside className={'sidebar' + (menu ? ' open' : '')} aria-label="主导航">
+      <a className="brand" href="#home" aria-label="返回产品首页">
+        <span className="workspace-brand-mark" aria-hidden="true"><i/><i/><i/><i/></span>
+        <span>会务智策<small>活动运营工作台</small></span>
+      </a>
+      <nav>{navigation.map((item, i) => <div key={item.page}>
+        {(i === 0 || navigation[i - 1].group !== item.group) && <div className="nav-group">{item.group}</div>}
+        <a href={'#' + item.page} data-page={item.page} className={'nav-item' + (page === item.page ? ' active' : '')}
+          aria-current={page === item.page ? 'page' : undefined} onClick={() => setMenu(false)}>
+          <Icon name={item.page} size={19}/><span>{item.name}</span>
+          {item.page === 'tasks' && state && <span className="nav-count">{state.tasks.filter(t => t.status !== 'done').length}</span>}
+          {page === item.page && <span className="nav-active-dot"/>}
+        </a>
+      </div>)}</nav>
+      <div className="sidebar-bottom">
+        <button className="reset-link" onClick={() => {setReset(true); setResetError('')}}><Icon name="refresh" size={16}/>重置演示数据</button>
+      </div>
+    </aside>
+    <div className="main-shell">
+      <header className="topbar">
+        <div className="breadcrumb">
+          <button className="icon-button mobile-menu" aria-label="打开导航" aria-expanded={menu} onClick={() => setMenu(!menu)}><Icon name="menu"/></button>
+          <a href="#overview" title={state?.project.name}>{state?.project.name || '活动工作区'}</a><Icon name="chevron" size={14}/><strong>{current.name}</strong>
+        </div>
+        <div className="topbar-right">
+          <button className="find-trigger" aria-label="快捷查找" disabled={!state} onClick={() => setFind(true)}><Icon name="search" size={16}/><span>快捷查找</span><kbd>{isMac ? '⌘ K' : 'Ctrl K'}</kbd></button>
+          <span id="mode-badge" className="connection" title={state?.settings.model || undefined}><span className={state?.settings.configured ? '' : 'rule'}/>{!state ? '正在连接' : state.settings.configured ? '真实模型模式' : '本地规则模式'}</span>
+        </div>
+      </header>
+      <main id="main-content" tabIndex={-1}>
+        {!state && (error ? <div className="load-error"><Icon name="info" size={32}/><h2>工作台暂时无法连接</h2><ErrorBox error={error}/><Button icon="refresh" onClick={() => void refresh()}>重新加载</Button></div> :
+          <div className="loading-screen"><Spinner/><h2>正在打开活动工作台</h2></div>)}
+        {state && <div key={resetVersion}>{navigation.map(item => {
+          const shared = {state, change, notify};
+          const Module = item.page === 'overview' ? null : modules[item.page];
+          return <section key={item.page} className="page" hidden={page !== item.page} aria-label={item.name}>
+            {Module ? <Module {...shared}/> : <Overview {...shared} active={active && page === 'overview'} startEditRequest={startEditRequest} consumeEdit={consumeEdit}/>}
+          </section>;
+        })}</div>}
+      </main>
+      <footer className="app-footer"><span>会务智策 · 活动运营工作台</span><span>生成的活动方案请在执行前核对</span></footer>
+    </div>
+    {active && find && state && <QuickFind state={state} onClose={() => setFind(false)}/>}
+    {toast && <div className="toast" role="status"><span><Icon name="check" size={17}/></span>{toast.message}<button className="icon-button" aria-label="关闭提示" onClick={notifyClose}><Icon name="close" size={16}/></button></div>}
+    {active && reset && <Modal title="重置演示数据？" onClose={() => {if (!resetting) setReset(false)}}>
+      <p className="modal-copy">当前活动、导入的资料、任务、预算和生成内容将被清空，并恢复为虚构教学示例。此操作无法撤销。</p>
+      <ErrorBox error={resetError}/><div className="form-actions"><Button disabled={resetting} variant="secondary" onClick={() => setReset(false)}>保留当前数据</Button>
+        <Button variant="danger" disabled={resetting} onClick={() => void doReset()}>{resetting ? '重置中…' : '确认重置'}</Button></div></Modal>}
+  </div>;
+}

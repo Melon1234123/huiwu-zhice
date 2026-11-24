@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "success": true,
+  "scope": "Chromium desktop browser, two tabs, temporary local SQLite, rule provider, no external requests",
+  "cases": [
+    {
+      "name": "Initial state request returns HTTP 503; retry loads the saved workspace",
+      "status": "passed"
+    },
+    {
+      "name": "Transient HTTP 503 during budget submission preserves the draft; retry saves exactly the intended value",
+      "status": "passed"
+    },
+    {
+      "name": "A saves row 1, stale B gets HTTP 409, sees newer line and retains old draft until explicitly reloaded",
+      "status": "passed"
+    },
+    {
+      "name": "B saves row 2 after reloading; database retains both edits",
+      "status": "passed"
+    },
+    {
+      "name": "After inspecting conflict, explicit reconciliation keeps draft edits and newer amounts",
+      "status": "passed"
+    },
+    {
+      "name": "Delayed budget response cannot remove a newer task from the active page",
+      "status": "passed"
+    }
+  ],
+  "tests_run": 6,
+  "passed": 6
+}

@@ -54,11 +54,15 @@ LLM_THINKING=disabled
 7. 生成宣传文案，核对时间、地点、嘉宾和报名信息。
 8. 审阅方案并导出 Markdown、JSON 或 CSV。
 
+在工作台按 ⌘ K 或 Ctrl K，输入资料原文、任务名称或负责人，按方向键和 Enter 打开对应条目。任务看板支持逾期、今天和近七天筛选。草案右上角可以切换宽幅阅读。
+
+在两个浏览器标签页同时编辑预算时，后保存的一方会看到最新预算，可对照草稿决定如何处理。
+
 同名生成任务去重，保留现有任务信息。模型输出均为待审核草案。预算金额由确定性 Decimal 规则计算，不能用模型文本替代核算。
 
 ## 开发
 
-后端为 Python 标准库 HTTP 服务与 SQLite。前端为 React、TypeScript 和 Vite，源码在 `frontend/`。需要修改界面时，在该目录运行：
+后端为 Python 标准库 HTTP 服务与 SQLite。前端为 React、TypeScript 和 Vite，源码在 `frontend/`。修改界面时使用 Node.js 20.19.x 或 22.12 及以上受支持的版本，在该目录运行：
 
 ```sh
 npm ci
@@ -69,7 +73,7 @@ npm run build
 
 后端测试使用临时数据库和本地 mock 供应商，不需要密钥，也不会修改日常工作台。在代码根目录运行 `python3 tests/run_tests.py`（Windows 使用 `py -3 tests/run_tests.py`）。本轮结果见 `verification/backend-test-results.json`，浏览器验证另行记录，不与模型效果混为一谈。
 
-本次界面从零使用用户指定的 [frontend-showcase skill](https://github.com/Melon1234123/skill-fronted) 重新生成。视觉素材为 CSS、排印、SVG 图标及真实应用状态，没有外部照片或将生成图片当作功能证据。减少动态时保留完整内容与操作。
+界面依据 [frontend-showcase skill](https://github.com/Melon1234123/skill-fronted) 设计。首页使用 AI 概念图和本地视频，工作台展示当前项目的真实数据。启用减少动态后，首页以静态图呈现。素材来源见 frontend/MEDIA_PROVENANCE.md。
 
 ## 实用边界
 

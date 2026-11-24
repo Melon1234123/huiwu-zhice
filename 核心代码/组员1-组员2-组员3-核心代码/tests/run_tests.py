@@ -5,6 +5,7 @@ import concurrent.futures
 import io
 import json
 import os
+import sqlite3
 from pathlib import Path
 import sys
 import tempfile
@@ -54,6 +55,30 @@ class AppChecks(unittest.TestCase):
         self.app.project(p)
         reopened=Service(Store(self.store.path),Provider(env={}))
         self.assertEqual(reopened.state()['project']['name'],'持久化活动')
+
+    def test_legacy_database_migrates_without_losing_state(self):
+        legacy_path = Path(self.temp.name) / 'legacy.sqlite'
+        prior = self.app.state()
+        prior.pop('settings')
+        prior['project']['name'] = '已有项目'
+        with sqlite3.connect(legacy_path) as db:
+            db.execute('CREATE TABLE state (id INTEGER PRIMARY KEY, value TEXT NOT NULL)')
+            db.execute('INSERT INTO state VALUES (1, ?)', (json.dumps(prior),))
+        old = Store(legacy_path)
+        self.assertEqual(old.read(), prior)
+        self.assertEqual(old.read().revision, 0)
+        new = Service(old, Provider(env={})).save_budget({'items': [], 'reserve_rate': 0})
+        self.assertEqual(new.revision, 1)
+        self.assertEqual(Store(legacy_path).read().revision, 1)
+
+    def test_budget_precondition_ignores_unrelated_edits_and_allows_retries(self):
+        base = self.app.state()['budget']
+        self.app.save_task({'title': '阶段核对', 'owner': '', 'due': '2026-11-14'})
+        project = self.app.state()['project']
+        self.app.project({**project, 'budget_limit': 2000})
+        body = {'items': [], 'reserve_rate': 0, 'base_budget': base}
+        self.assertEqual(self.app.save_budget(body)['budget']['remaining'], 2000)
+        self.assertEqual(self.app.save_budget(body)['budget']['remaining'], 2000)
 
     def test_project_budget_recalculates_remaining(self):
         p=self.app.state()['project'];p['budget_limit']=2000
@@ -233,6 +258,53 @@ class AppChecks(unittest.TestCase):
         with self.assertRaises(UserError):Service(self.store,Changing()).generate(dict(kind='plan'))
         self.assertNotIn('plan',self.app.state()['outputs'])
 
+    def test_model_review_rejects_changed_task_status(self):
+        previous = self.app.generate({'kind': 'review'})['outputs']['review']
+        provider = FakeProvider()
+        def update_task(system, user):
+            task = json.loads(user)['context']['tasks'][1]
+            self.assertEqual(task['status'], 'doing')
+            self.app.save_task({'status': 'done'}, task['id'])
+            return '任务仍在进行中'
+        with patch.object(provider, 'complete', side_effect=update_task), self.assertRaises(UserError):
+            Service(self.store, provider).generate({'kind': 'review'})
+        state = self.app.state()
+        self.assertEqual(state['tasks'][1]['status'], 'done')
+        self.assertEqual(state['outputs']['review'], previous)
+        self.assertEqual(state['activity'][0]['action'], '更新任务')
+
+    def test_model_review_rejects_changed_source_draft(self):
+        self.app.generate({'kind': 'agenda'})
+        provider = FakeProvider()
+        def replace_agenda(system, user):
+            self.assertIn('agenda', json.loads(user)['context']['outputs'])
+            Service(self.store, FakeProvider('最新日程')).generate({'kind': 'agenda'})
+            return '旧日程符合要求'
+        with patch.object(provider, 'complete', side_effect=replace_agenda), self.assertRaises(UserError):
+            Service(self.store, provider).generate({'kind': 'review'})
+        outputs = self.app.state()['outputs']
+        self.assertEqual(outputs['agenda']['content'], '最新日程')
+        self.assertNotIn('review', outputs)
+
+    def test_overlapping_plans_preserve_first_saved_result(self):
+        provider = FakeProvider()
+        def finish_other_request(system, user):
+            Service(self.store, FakeProvider('已保存的新版')).generate({'kind': 'plan'})
+            return '迟到的旧版'
+        with patch.object(provider, 'complete', side_effect=finish_other_request), self.assertRaises(UserError):
+            Service(self.store, provider).generate({'kind': 'plan'})
+        self.assertEqual(self.app.state()['outputs']['plan']['content'], '已保存的新版')
+
+    def test_unrelated_draft_can_be_saved_during_plan_generation(self):
+        provider = FakeProvider()
+        def save_copy(system, user):
+            self.app.generate({'kind': 'copy'})
+            return '策划正文'
+        with patch.object(provider, 'complete', side_effect=save_copy):
+            state = Service(self.store, provider).generate({'kind': 'plan'})
+        self.assertEqual(state['outputs']['plan']['content'], '策划正文')
+        self.assertIn('copy', state['outputs'])
+
     def test_unknown_generation_kind_rejected(self):
         with self.assertRaises(UserError):self.app.generate(dict(kind='unknown'))
 
@@ -358,6 +430,25 @@ class HTTPChecks(unittest.TestCase):
         status,raw,headers=self.request('/api/health');self.assertEqual(status,200);self.assertEqual(json.loads(raw)['mode'],'rule')
         status,raw,headers=self.request('/api/state')
         self.assertEqual(set(json.loads(raw)),{'project','documents','tasks','budget','outputs','activity','settings'})
+
+    def test_stale_budget_update_returns_latest_state_and_revision(self):
+        _, raw, headers = self.request('/api/state')
+        before = json.loads(raw)
+        revision = int(headers['X-Workspace-Revision'])
+        base = before['budget']
+        first = {'items': [{'name': '争用测试', 'qty': 2, 'unit_price': 2.5}], 'reserve_rate': 0}
+        try:
+            code, raw, headers = self.request('/api/budget', 'POST', {**first, 'base_budget': base})
+            saved = json.loads(raw)
+            self.assertEqual((code, int(headers['X-Workspace-Revision'])), (200, revision + 1))
+            code, raw, headers = self.request('/api/budget', 'POST', {
+                'items': [], 'reserve_rate': 0, 'base_budget': base,
+            })
+            self.assertEqual((code, int(headers['X-Workspace-Revision'])), (409, revision + 1))
+            self.assertEqual(json.loads(raw)['state'], saved)
+            self.assertEqual(json.loads(self.request('/api/state')[1]), saved)
+        finally:
+            self.request('/api/budget', 'POST', base)
 
     def test_cross_origin_mutation_rejected(self):
         status,raw,headers=self.request('/api/reset','POST',{},headers={'Origin':'https://evil.example'})

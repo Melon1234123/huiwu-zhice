@@ -1,0 +1,152 @@
+.tasks-workbench {
+  --task-stroke: #32455e;
+  --task-muted: #a7b8d4;
+  --task-blue: #9ec5ff;
+}
+
+.tasks-workbench .task-board-tools {
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-bottom: 13px;
+}
+
+.tasks-workbench .task-search {
+  width: min(300px, 100%);
+}
+.tasks-workbench .task-search svg { flex-shrink: 0; }
+.tasks-workbench .task-search:focus-within {
+  outline: 2px solid var(--task-blue);
+  outline-offset: 2px;
+}
+.tasks-workbench .task-search input {
+  min-width: 0;
+  font-size: 12px;
+  outline: none;
+}
+
+.task-deadline-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding-bottom: 16px;
+}
+.task-filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.task-filter-options button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  border: 1px solid var(--task-stroke);
+  border-radius: 7px;
+  padding: 4px 10px;
+  background: #101d32;
+  color: var(--task-muted);
+  font-size: 12px;
+}
+.task-filter-options button:hover { border-color: #6583aa; }
+.task-filter-options button[aria-pressed="true"] {
+  color: #e5efff;
+  background: #203d66;
+  border-color: #628cbe;
+}
+.task-filter-options button span {
+  font-variant-numeric: tabular-nums;
+  color: var(--task-blue);
+  font-size: 11px;
+}
+.task-sort-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--task-muted);
+}
+.task-sort-note button {
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--task-blue);
+  padding: 4px 2px;
+}
+.tasks-workbench :is(button, select):focus-visible {
+  outline: 2px solid var(--task-blue);
+  outline-offset: 2px;
+}
+.tasks-workbench .column-heading { margin-bottom: 14px; }
+.tasks-workbench .kanban-cards {
+  gap: 10px;
+  padding: 3px;
+}
+.tasks-workbench .kanban-card { padding: 12px 13px 0; }
+.tasks-workbench .task-card-top {
+  align-items: flex-start;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.tasks-workbench .task-deadline {
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 4px 0;
+  line-height: 1.35;
+  font-size: 11px;
+}
+.tasks-workbench .task-deadline time { white-space: nowrap; }
+.tasks-workbench .task-deadline b {
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.tasks-workbench .task-deadline.is-overdue { color: #ffad9e; }
+.tasks-workbench .task-deadline.is-today { color: #f4d185; }
+.task-card-actions {
+  display: flex;
+  flex-shrink: 0;
+}
+.tasks-workbench .task-card-actions .icon-button {
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  min-height: 26px;
+  padding: 3px;
+}
+.tasks-workbench .kanban-card h3 {
+  font-size: 14px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  margin: 0 0 12px;
+}
+.tasks-workbench .task-card-bottom { padding: 8px 0; }
+.tasks-workbench .task-owner { min-width: 0; font-size: 11px; }
+.tasks-workbench .task-owner em {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-style: normal;
+}
+.tasks-workbench .task-status-select {
+  min-height: 27px;
+  font-size: 11px;
+}
+.tasks-workbench .column-empty p { font-size: 12px; }
+.tasks-workbench .column-empty small { font-size: 11px; }
+.tasks-workbench .add-task-link { min-height: 32px; font-size: 12px; }
+
+@media (min-width: 1000px) and (min-height: 650px) {
+  .tasks-workbench .kanban-cards {
+    max-height: max(330px, calc(100vh - 365px));
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #476181 transparent;
+  }
+}
+@media (max-width: 620px) {
+  .tasks-workbench .task-search { width: 100%; }
+  .task-filter-options { gap: 5px; }
+  .task-filter-options button { padding-inline: 7px; }
+}

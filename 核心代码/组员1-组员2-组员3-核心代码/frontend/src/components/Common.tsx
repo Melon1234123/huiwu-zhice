@@ -1,9 +1,34 @@
-import {useEffect,useRef} from 'react';
+import {useEffect,useId,useRef} from 'react';
 import type {ReactNode} from 'react';
 import {Icon} from './Icon';
 export function Button({children,icon,variant='',...props}:React.ButtonHTMLAttributes<HTMLButtonElement>&{icon?:string;variant?:string}){return <button className={`button ${variant}`} {...props}>{icon&&<Icon name={icon} size={18}/>} {children}</button>}
 export function PageHeader({eyebrow,title,description,action}:{eyebrow:string;title:string;description:string;action?:ReactNode}){return <div className="page-header"><div><div className="eyebrow">{eyebrow}</div><h1>{title}</h1><p>{description}</p></div>{action&&<div className="page-action">{action}</div>}</div>}
-export function Modal({title,children,onClose}:{title:string;children:ReactNode;onClose:()=>void}){const ref=useRef<HTMLDialogElement>(null);useEffect(()=>{const previous=document.activeElement;const dialog=ref.current;dialog?.showModal();return()=>{dialog?.close();if(previous instanceof HTMLElement&&previous.isConnected)previous.focus()}},[]);return <dialog ref={ref} className="modal" onCancel={onClose} onClick={e=>{if(e.target===e.currentTarget){const r=e.currentTarget.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)onClose()}}}><div className="modal-heading"><h2>{title}</h2><button className="icon-button" onClick={onClose} aria-label="关闭弹窗"><Icon name="close"/></button></div>{children}</dialog>}
+export function Modal({title, children, onClose}: {title: string; children: ReactNode; onClose: () => void}) {
+  const ref = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
+  useEffect(() => {
+    const previous = document.activeElement;
+    const dialog = ref.current;
+    dialog?.showModal();
+    return () => {
+      dialog?.close();
+      if (previous instanceof HTMLElement && previous.isConnected && previous.getClientRects().length) {
+        previous.focus({preventScroll: true});
+      }
+    };
+  }, []);
+  return <dialog ref={ref} className="modal" aria-labelledby={titleId}
+    onCancel={event => {event.preventDefault(); onClose()}}
+    onClick={event => {
+      if (event.target !== event.currentTarget) return;
+      const rect = event.currentTarget.getBoundingClientRect();
+      if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) onClose();
+    }}>
+    <div className="modal-heading"><h2 id={titleId}>{title}</h2>
+      <button type="button" className="icon-button" onClick={onClose} aria-label="关闭弹窗"><Icon name="close"/></button>
+    </div>{children}
+  </dialog>;
+}
 export function ErrorBox({error,retry}:{error:string;retry?:()=>void}){return error?<div className="error-box" role="alert"><Icon name="info" size={18}/><span>{error}</span>{retry&&<button type="button" onClick={retry}>重试</button>}</div>:null}
 export function Mode({mode}:{mode?:string}){return <span className={`mode-badge ${mode==='model'?'model':''}`}>{mode==='model'?'真实模型生成':'本地规则生成'}</span>}
 export function Empty({icon='documents',title,description,action}:{icon?:string;title:string;description:string;action?:ReactNode}){return <div className="empty"><span className="empty-icon"><Icon name={icon} size={28}/></span><h3>{title}</h3><p>{description}</p>{action}</div>}

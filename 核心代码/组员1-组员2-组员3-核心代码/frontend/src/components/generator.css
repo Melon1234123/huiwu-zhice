@@ -1,0 +1,96 @@
+.generation-layout .output-toolbar,
+.generation-layout .generator-output-title,
+.generation-layout .generator-output-actions {
+  flex-wrap: wrap;
+}
+.generation-layout .generator-output-actions {
+  gap: 6px;
+  margin-left: auto;
+}
+.generation-layout .output-toolbar button {
+  min-height: 29px;
+  padding: 5px 9px;
+  font-size: 11px;
+  white-space: nowrap;
+  color: #c2d3ed;
+}
+.generation-layout .output-toolbar .generator-reader-toggle {
+  color: #cae0ff;
+  background: #1d3556;
+}
+.generation-layout .generator-reader-toggle:hover {
+  background: #2a466f;
+}
+.generation-reader {
+  width: min(1360px, calc(100vw - 48px));
+  height: min(94vh, 1260px);
+  height: min(94dvh, 1260px);
+  max-width: none;
+  max-height: none;
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #466387;
+  border-radius: 14px;
+  background: #111e35;
+  color: #d1def4;
+  box-shadow: 0 20px 70px #0006;
+}
+.generation-reader[open] {
+  display: flex;
+  flex-direction: column;
+}
+.generation-reader::backdrop {
+  background: #040a16c9;
+}
+.generation-reader .output-toolbar,
+.generation-reader .output-meta,
+.generation-reader .generation-progress {
+  flex-shrink: 0;
+}
+.generation-reader .output-toolbar {
+  padding: 14px clamp(16px, 3vw, 40px);
+}
+.generation-reader .output-toolbar strong { font-size: 16px; }
+.generation-reader .output-meta {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding: 9px clamp(16px, 3vw, 40px);
+  font-size: 12px;
+}
+.generation-reader .generator-copy-status {
+  margin-left: auto;
+  color: #b6d4ff;
+}
+.generation-reader .generator-copy-status:empty { display: none; }
+.generation-reader .output-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 24px clamp(16px, 3vw, 40px) 40px;
+  scrollbar-gutter: stable;
+}
+.generation-reader .output-content:focus-visible {
+  outline: 2px solid #8bb7ff;
+  outline-offset: -3px;
+}
+.generation-reader .markdown {
+  font-size: 15px;
+  line-height: 1.8;
+}
+.generation-reader .markdown :is(p, ul, ol, blockquote) { max-width: 80ch; }
+.generation-reader .markdown table { font-size: 13px; }
+.generation-reader .markdown :is(td, th) { min-width: 96px; }
+
+@media (max-width: 620px) {
+  .generation-reader {
+    width: calc(100vw - 12px);
+    height: calc(100dvh - 16px);
+    border-radius: 10px;
+  }
+  .generation-reader .output-toolbar { padding: 10px 12px; }
+  .generation-reader .output-meta { padding: 8px 12px; font-size: 10px; }
+  .generation-reader .output-content { padding: 16px 12px 24px; }
+}

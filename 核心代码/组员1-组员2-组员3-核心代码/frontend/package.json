@@ -1,6 +1,23 @@
 {
-  "name": "huiwu-zhice", "version": "1.0.0", "private": true, "type": "module",
-  "scripts": {"dev": "vite --host 127.0.0.1", "build": "tsc -b && vite build"},
-  "dependencies": {"react": "19.2.7", "react-dom": "19.2.7"},
-  "devDependencies": {"@types/react": "19.2.14", "@types/react-dom": "19.2.3", "@vitejs/plugin-react": "6.0.3", "typescript": "7.0.2", "vite": "8.1.5"}
+  "name": "huiwu-zhice",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc -b && vite build",
+    "test:desktop": "node tests/desktop-workflow.mjs"
+  },
+  "dependencies": {
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.3",
+    "playwright": "1.62.1",
+    "typescript": "7.0.2",
+    "vite": "8.1.5"
+  }
 }

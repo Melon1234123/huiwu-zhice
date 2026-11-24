@@ -8,6 +8,10 @@ class UserError(ValueError):
     pass
 
 
+class BudgetConflict(UserError):
+    pass
+
+
 def obj(value):
     if not isinstance(value, dict):
         raise UserError("请求必须是 JSON 对象。")

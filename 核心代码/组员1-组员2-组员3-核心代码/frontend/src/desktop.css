@@ -1,0 +1,122 @@
+/* Application shell */
+.app-shell { --desk-line: #26364b; --desk-blue: #accfee; --desk-amber: #f0c792; }
+.app-shell .sidebar { padding: 24px 15px 8px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.app-shell .sidebar nav { padding-top: 18px; }
+.app-shell .brand { padding-inline: 10px; }
+.app-shell .workspace-brand-mark { display: grid; grid-template-columns: repeat(2, 10px); gap: 3px; transform: rotate(45deg); margin: 0 4px; }
+.workspace-brand-mark i { width: 10px; height: 10px; border-radius: 2px; background: #bbd9f3; }
+.workspace-brand-mark i:nth-child(2) { background: #f4f8ff; }
+.workspace-brand-mark i:nth-child(3) { background: #52799a; }
+.workspace-brand-mark i:last-child { background: #83aecf; }
+.app-shell .sidebar-bottom { padding: 16px 2px 0; }
+.app-shell .reset-link { border-top: 1px solid var(--desk-line); border-radius: 0; padding: 16px 12px; }
+.app-shell .nav-item { font-size: 14px; }
+.app-shell .nav-group { font-size: 11px; }
+.app-shell .breadcrumb { min-width: 0; }
+.app-shell .breadcrumb > a { text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 32ch; }
+.app-shell .breadcrumb > a:hover { color: #e4f0ff; }
+.app-shell .breadcrumb strong, .app-shell .topbar-right { flex-shrink: 0; }
+.app-shell .connection { font-size: 12px; }
+.app-shell .connection > span { background: #85c4af; }
+.app-shell .connection > span.rule { background: #a3bad0; }
+.find-trigger { display: flex; align-items: center; gap: 9px; padding: 7px 10px; background: #101c2d; border: 1px solid var(--desk-line); border-radius: 7px; color: #cad7e7; font-size: 12px; }
+.find-trigger:hover { border-color: #8db1cf; }
+.find-trigger kbd, .find-keys kbd { font-family: inherit; font-size: 11px; color: #b5c6d8; border: 1px solid #34465d; border-radius: 4px; padding: 0 4px; background: #1c2b3d; }
+.find-trigger kbd { margin-left: 12px; }
+.find-input { display: flex; align-items: center; gap: 12px; padding-left: 13px; background: #0b1424; border: 1px solid #5e7c98; border-radius: 9px; }
+.find-input input { background: transparent; border: 0; padding-left: 0; }
+.find-input:focus-within { outline: 2px solid #a8cfee; outline-offset: 2px; }
+.find-input input:focus { box-shadow: none; }
+.find-count, .find-keys { font-size: 12px; color: #aebfd1; }
+.find-count { margin-top: 18px; margin-bottom: 8px; }
+.find-results { max-height: min(41vh, 345px); overflow-y: auto; scroll-padding-block: 4px; }
+.find-option { display: flex; align-items: center; gap: 13px; min-height: 51px; padding: 7px 12px; border-radius: 6px; color: #c6d8eb; }
+.find-option:is(.selected, :hover) { background: #20344b; }
+.find-option span { flex: 1; min-width: 0; }
+.find-option strong, .find-option small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.find-option strong { color: #f1f6ff; font-size: 14px; }
+.find-option small, .find-option em { color: #bfcee0; font-size: 11px; font-style: normal; }
+.find-keys { border-top: 1px solid var(--desk-line); padding-top: 12px; margin-top: 12px; }
+.find-keys kbd:not(:first-child) { margin-left: 5px; }
+.find-empty { margin: 12px 0 25px; color: #d1deed; }
+.editor-fields { padding: 0; margin: 0; min-width: 0; border: 0; }
+
+/* Project overview */
+.desk-overview { display: grid; gap: 19px; }
+.desk-overview .event-banner {
+  isolation: isolate; position: relative; display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 21px; min-height: 186px; padding: 23px 28px; background: #101c2b;
+  border: 1px solid #344963; border-radius: 14px; overflow: hidden;
+}
+.desk-overview .event-banner::after {
+  content: ''; position: absolute; inset: 0; width: auto; height: auto; z-index: -1; border: 0; border-radius: 0;
+  background: linear-gradient(90deg, #101c2b 19%, #101c2bef 44%, #101c2b77 74%, #0b14298c), url('/media/hero.jpg') right 44% / cover no-repeat;
+}
+.workspace-view-title { margin-bottom: 8px; color: #b9d5ed; font-size: 13px; font-weight: 520; letter-spacing: .05em; }
+.desk-overview .event-intro { min-width: 0; max-width: min(100%, 720px); }
+.desk-overview .event-intro h2 { font-size: clamp(24px, 2.6vw, 44px); line-height: 1.2; overflow-wrap: anywhere; }
+.desk-overview .event-intro p { color: #d8e4f0; font-size: 14px; margin: 9px 0 0; overflow-wrap: anywhere; }
+.desk-overview .event-meta { margin-top: 17px; gap: 18px; }
+.desk-overview .event-meta span { color: #d5e3f2; font-size: 12px; }
+.desk-overview .event-banner > .button { flex: none; color: #f2f7ff; background: #14263cdb; border-color: #68839f; }
+.desk-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--desk-line); background: #101b2c; border-radius: 12px; overflow: hidden; }
+.desk-stats a { padding: 14px 20px; border-left: 1px solid var(--desk-line); display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+.desk-stats a:first-child { border-left: 0; }
+.desk-stats a:hover, .desk-drafts a:hover, .desk-overview .task-row:hover { background: #18293e; }
+.desk-stats a:focus-visible { outline-offset: -4px; }
+.desk-stats span { color: #c6d4e5; font-size: 13px; }
+.desk-stats strong { color: #f3f8ff; font-size: 29px; letter-spacing: -.04em; line-height: 1.3; font-variant-numeric: tabular-nums; }
+.desk-stats strong small { font-size: 13px; font-weight: 500; margin-left: 4px; color: #aabbd0; }
+.desk-stats em { font-style: normal; color: #9eb3c9; font-size: 12px; }
+.desk-stats .attention strong { color: var(--desk-amber); }
+.desk-overview .overview-grid, .desk-overview .overview-bottom { margin: 0; gap: 18px; }
+.desk-overview .panel { border-radius: 12px; background: #101b2d; border-color: var(--desk-line); }
+.desk-overview .panel-heading { padding: 17px 20px 11px; }
+.desk-overview .panel-heading h2 { font-size: 18px; }
+.desk-overview .panel-heading p, .desk-overview .text-button { font-size: 12px; }
+.desk-overview .task-list { padding: 0 20px 8px; }
+.desk-overview .task-row { padding: 11px 0; min-height: 57px; }
+.desk-overview .task-row-title { min-width: 0; }
+.desk-overview .task-row-title strong { font-size: 14px; overflow-wrap: anywhere; }
+.desk-overview .task-row-title small, .desk-overview .status-badge { font-size: 12px; }
+.desk-overview .budget-total { padding: 12px 20px 0; }
+.desk-overview .budget-total strong { font-size: clamp(26px, 2.65vw, 42px); font-variant-numeric: tabular-nums; }
+.desk-overview .budget-overview > .budget-line { margin: 18px 20px 0; }
+.desk-overview .budget-remaining { margin-inline: 20px; padding-bottom: 18px; }
+.desk-overview .budget-total :is(small,span), .desk-overview .budget-remaining { font-size: 13px; }
+.desk-drafts ul { margin: 0; padding: 0 20px 9px; list-style: none; }
+.desk-drafts li + li { border-top: 1px solid var(--desk-line); }
+.desk-drafts a { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
+.desk-drafts a > svg { color: var(--desk-blue); }
+.desk-drafts a strong { font-size: 14px; }
+.desk-drafts a small { font-size: 12px; color: #aebdd0; margin-left: auto; }
+.desk-overview .activity-list li { align-items: baseline; }
+.desk-overview .activity-list li > div { min-width: 0; overflow-wrap: anywhere; }
+.desk-overview .activity-list time { font-size: 11px; }
+@media (min-width: 761px) {
+  .app-shell .topbar { height: 58px; padding-inline: clamp(20px, 2.25vw, 40px); }
+  .app-shell #main-content { padding: 24px clamp(20px, 2.25vw, 40px) 30px; }
+  .app-shell .sidebar { width: 206px; }
+  .app-shell .main-shell { margin-left: 206px; }
+  .app-shell .sidebar nav { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+  .app-shell .sidebar .nav-item { min-height: 36px; padding: 8px 10px; }
+  .app-shell .nav-group { margin: 14px 10px 5px; }
+  .app-shell .page-header { margin-bottom: 19px; }
+}
+@media (min-width: 1650px) {
+  .app-shell .sidebar { width: 225px; padding-inline: 20px; }
+  .app-shell .main-shell { margin-left: 225px; }
+  .desk-overview { gap: 22px; }
+  .desk-overview .task-row { min-height: 66px; }
+}
+@media (max-width: 760px) {
+  .find-trigger { padding: 6px; }
+  .find-trigger span, .find-trigger kbd { display: none; }
+  .app-shell .breadcrumb > a { max-width: 22vw; }
+  .desk-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .desk-stats a { padding: 12px; }
+  .desk-stats a:nth-child(3) { border-left: 0; }
+  .desk-stats a:nth-child(n+3) { border-top: 1px solid var(--desk-line); }
+  .desk-overview .event-banner { flex-wrap: wrap; }
+  .desk-overview .event-meta { flex-wrap: wrap; }
+}

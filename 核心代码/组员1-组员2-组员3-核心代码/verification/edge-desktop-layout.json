@@ -1,0 +1,69 @@
+{
+  "engine": "Microsoft Edge",
+  "version": "158.0.4370.33",
+  "sizes": [
+    {
+      "width": 1280,
+      "height": 720,
+      "verified_pages": [
+        "overview",
+        "documents",
+        "qa",
+        "planning",
+        "tasks",
+        "budget",
+        "copy",
+        "review"
+      ],
+      "keyboard_deep_link": true
+    },
+    {
+      "width": 1536,
+      "height": 864,
+      "verified_pages": [
+        "overview",
+        "documents",
+        "qa",
+        "planning",
+        "tasks",
+        "budget",
+        "copy",
+        "review"
+      ],
+      "keyboard_deep_link": true
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "verified_pages": [
+        "overview",
+        "documents",
+        "qa",
+        "planning",
+        "tasks",
+        "budget",
+        "copy",
+        "review"
+      ],
+      "keyboard_deep_link": true
+    },
+    {
+      "width": 1024,
+      "height": 640,
+      "verified_pages": [
+        "overview",
+        "documents",
+        "qa",
+        "planning",
+        "tasks",
+        "budget",
+        "copy",
+        "review"
+      ],
+      "keyboard_deep_link": true
+    }
+  ],
+  "page_errors": [],
+  "mode": "isolated local rule service",
+  "passed": true
+}

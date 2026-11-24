@@ -1,0 +1,76 @@
+{
+  "timestamp": "2026-11-24T17:27:24.251Z",
+  "bundle_sha256": "7ab2ed46c4f2b7f3a5451d265127c8e667243f5461b512954777d3116cba7457",
+  "mode": "isolated local rules",
+  "checks": [
+    {
+      "name": "首页首次加载及进入工作台只取一次状态",
+      "pass": true,
+      "evidence": {
+        "GET_state": 1
+      }
+    },
+    {
+      "name": "工作台深链首次加载只取一次状态",
+      "pass": true,
+      "evidence": {
+        "GET_state": 1
+      }
+    },
+    {
+      "name": "Ctrl+K / ⌘K 与无结果恢复",
+      "pass": true
+    },
+    {
+      "name": "查找任务后回车定位精确任务",
+      "pass": true
+    },
+    {
+      "name": "查找原文、对照提问及引用回查",
+      "pass": true,
+      "evidence": {
+        "answer_source": "rule_retrieval",
+        "citations": 2
+      }
+    },
+    {
+      "name": "预算草稿跨页面保留且未写入已保存预算",
+      "pass": true,
+      "evidence": {
+        "preview": 2097.76,
+        "saved": 2090
+      }
+    },
+    {
+      "name": "问答输入草稿跨页保持，未发送请求",
+      "pass": true,
+      "evidence": {
+        "ask_requests": 0
+      }
+    },
+    {
+      "name": "首页主动暂停后往返工作台仍暂停",
+      "pass": true,
+      "evidence": {
+        "video_paused": true,
+        "GET_state": 1
+      }
+    },
+    {
+      "name": "活动编辑弹窗中浏览器后退，任务页恢复点击",
+      "pass": true
+    },
+    {
+      "name": "新增资料弹窗中浏览器后退，任务页恢复点击",
+      "pass": true
+    },
+    {
+      "name": "重置确认弹窗中浏览器后退，任务页恢复点击",
+      "pass": true
+    }
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "chromium": "151.0.7922.34",
+  "pass": true
+}

@@ -13,7 +13,7 @@ from urllib.parse import parse_qs,unquote,urlsplit
 from backend.provider import ModelError,Provider
 from backend.service import Service
 from backend.storage import Store
-from backend.validation import UserError
+from backend.validation import BudgetConflict,UserError
 
 ROOT=Path(__file__).resolve().parent
 MAX_BODY=1_000_000
@@ -31,6 +31,9 @@ def make_handler(service,static_root=None):
             pass
 
         def send(self,status,body,content_type='application/json; charset=utf-8',download=None,extra_headers=None):
+            revision = getattr(body, 'revision', None)
+            if revision is not None:
+                extra_headers = {**(extra_headers or {}), 'X-Workspace-Revision': str(revision)}
             if not isinstance(body,bytes):
                 body=json.dumps(body,ensure_ascii=False,allow_nan=False).encode()
             self.send_response(status)
@@ -149,6 +152,10 @@ def make_handler(service,static_root=None):
         def handle_request(self):
             try:
                 self.route()
+            except BudgetConflict as error:
+                snapshot = service.state()
+                self.send(409, dict(error=str(error), state=snapshot),
+                          extra_headers={'X-Workspace-Revision': str(snapshot.revision)})
             except UserError as error:
                 self.send(400,dict(error=str(error)))
             except LookupError as error:

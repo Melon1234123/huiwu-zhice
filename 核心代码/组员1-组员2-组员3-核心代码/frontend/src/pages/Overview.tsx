@@ -1,9 +1,93 @@
-import {useEffect,useState} from 'react';
-import type {Page,Project,Shared} from '../types';
-import {money,shortDate} from '../api';
-import {Button,PageHeader,Modal,Field,ErrorBox,StatusBadge} from '../components/Common';
+import {useEffect, useState} from 'react';
+import type {Shared} from '../types';
+import {money, shortDate} from '../api';
+import {Button, StatusBadge} from '../components/Common';
 import {Icon} from '../components/Icon';
-export function Overview({state,change,notify,navigate,startEditRequest=0}:{navigate:(p:Page)=>void;startEditRequest?:number}&Shared){const [edit,setEdit]=useState(false);const [project,setProject]=useState<Project>(state.project);const [busy,setBusy]=useState(false);const [error,setError]=useState('');const done=state.tasks.filter(t=>t.status==='done').length;const progress=state.tasks.length?Math.round(done/state.tasks.length*100):0;const upcoming=[...state.tasks].filter(t=>t.status!=='done').sort((a,b)=>a.due.localeCompare(b.due)).slice(0,4);const milestones=[{title:'资料整理',done:state.documents.length>0,text:`${state.documents.length} 份活动资料`},{title:'策划成稿',done:!!state.outputs.plan,text:state.outputs.plan?'已有策划方案':'等待生成方案'},{title:'任务推进',done:progress===100,text:`${done}/${state.tasks.length} 项已完成`},{title:'活动审阅',done:!!state.outputs.review,text:state.outputs.review?'已有审阅结果':'完成筹备后审阅'}];
-useEffect(()=>{if(startEditRequest>0){setProject(state.project);setError('');setEdit(true)}},[startEditRequest]);
-async function save(e:React.FormEvent){e.preventDefault();setBusy(true);setError('');try{await change('/api/project',project);setEdit(false);notify('活动信息已保存')}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
-return <><PageHeader eyebrow="活动工作台" title="活动总览" description="从活动想法到现场执行，在一个工作台里推进。" action={<Button icon="edit" variant="secondary" onClick={()=>{setProject(state.project);setEdit(true)}}>编辑活动</Button>}/><section className="event-banner"><div className="event-intro"><span className="event-chip"><span/>正在筹备 · 虚构教学项目</span><h2>{state.project.name}</h2><p>{state.project.goal}</p><div className="event-meta"><span><Icon name="planning" size={16}/>{shortDate(state.project.date)}</span><span><Icon name="pin" size={16}/>{state.project.location}</span><span><Icon name="users" size={16}/>{state.project.attendees} 人</span></div></div><div className="event-progress"><div className="progress-title"><span>筹备进度</span><strong>{progress}<small>%</small></strong></div><div className="progress-track"><div style={{width:`${progress}%`}}/></div><p>已完成 {done} 项，还有 {state.tasks.length-done} 项待推进</p><Button onClick={()=>navigate('tasks')} icon="arrow">继续推进任务</Button></div></section><div className="milestones">{milestones.map((m,i)=><div className="milestone" key={m.title}><span className={`milestone-icon ${m.done?'complete':''}`}>{m.done?<Icon name="check" size={17}/>:i+1}</span><div><strong>{m.title}</strong><small>{m.text}</small></div>{i<3&&<span className="milestone-line"/>}</div>)}</div><div className="overview-grid"><section className="panel upcoming"><div className="panel-heading"><div><h2>近期任务</h2><p>按截止时间排序，先处理重要的下一步</p></div><button className="text-button" onClick={()=>navigate('tasks')}>查看全部 <Icon name="arrow" size={16}/></button></div><div className="task-list">{upcoming.length?upcoming.map(t=><button key={t.id} className="task-row" onClick={()=>navigate('tasks')}><span className={`task-marker ${t.status}`}><Icon name={t.status==='doing'?'clock':'tasks'} size={18}/></span><span className="task-row-title"><strong>{t.title}</strong><small>{t.owner||'待分配负责人'} · {shortDate(t.due)}</small></span><StatusBadge status={t.status}/><Icon name="chevron" size={16}/></button>):<div className="compact-empty">全部任务已完成，可以开始活动审阅。</div>}</div><div className="panel-footer"><Icon name="info" size={16}/><span>任务状态以实际操作为准，生成任务不会覆盖已有进度。</span></div></section><section className="panel budget-overview"><div className="panel-heading"><div><h2>预算概况</h2><p>已保存的费用与预备金</p></div><span className="soft-icon"><Icon name="budget"/></span></div><div className="budget-total"><small>预计支出</small><strong>{money(state.budget.total)}</strong><span>预算上限 {money(state.project.budget_limit)}</span></div><div className="budget-line"><div className={state.budget.remaining<0?'over':''} style={{width:`${Math.min(100,state.budget.total/Math.max(state.project.budget_limit,1)*100)}%`}}/></div><div className={`budget-remaining ${state.budget.remaining<0?'negative':''}`}><span>{state.budget.remaining<0?'已超出预算':'剩余可用'}</span><strong>{money(Math.abs(state.budget.remaining))}</strong></div><button className="text-button" onClick={()=>navigate('budget')}>管理费用明细 <Icon name="arrow" size={16}/></button></section></div><div className="overview-bottom"><section className="panel quick-start"><div className="panel-heading"><div><h2>开始下一步</h2><p>让资料直接参与策划和执行</p></div></div><div className="quick-actions">{[{page:'documents',title:'整理活动资料',desc:'导入场地要求、报名规则与背景'},{page:'qa',title:'带着依据提问',desc:'回到原文确认关键条件'},{page:'planning',title:'完善活动策划',desc:'生成方案、日程与风险预案'}].map(a=><button key={a.page} onClick={()=>navigate(a.page as Page)}><span className="quick-icon"><Icon name={a.page}/></span><span><strong>{a.title}</strong><small>{a.desc}</small></span><Icon name="arrow" size={18}/></button>)}</div></section><section className="panel activity-panel"><div className="panel-heading"><div><h2>最近动态</h2><p>工作台中的实际操作记录</p></div></div><ol className="activity-list">{state.activity.slice(0,3).map(a=><li key={a.id}><span className="activity-dot"/><div><strong>{a.action}</strong><p>{a.detail}</p></div><time>{new Date(a.created_at).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}</time></li>)}</ol></section></div>{edit&&<Modal title="编辑活动信息" onClose={()=>setEdit(false)}><form id="project-form" onSubmit={save}><Field label="活动名称"><input required maxLength={100} value={project.name} onChange={e=>setProject({...project,name:e.target.value})}/></Field><div className="form-grid"><Field label="活动日期"><input required type="date" value={project.date} onChange={e=>setProject({...project,date:e.target.value})}/></Field><Field label="预计人数"><input required type="number" min="1" max="100000" value={project.attendees} onChange={e=>setProject({...project,attendees:Number(e.target.value)})}/></Field><Field label="活动地点"><input required value={project.location} onChange={e=>setProject({...project,location:e.target.value})}/></Field><Field label="预算上限（元）"><input required type="number" min="0" step="0.01" value={project.budget_limit} onChange={e=>setProject({...project,budget_limit:Number(e.target.value)})}/></Field></div><Field label="面向人群"><input required value={project.audience} onChange={e=>setProject({...project,audience:e.target.value})}/></Field><Field label="活动目标"><textarea required rows={3} value={project.goal} onChange={e=>setProject({...project,goal:e.target.value})}/></Field><ErrorBox error={error}/><div className="form-actions"><Button type="button" variant="secondary" onClick={()=>setEdit(false)}>取消</Button><Button disabled={busy}>{busy?'保存中…':'保存活动信息'}</Button></div></form></Modal>}</>}
+import {ProjectEditor} from './ProjectEditor';
+
+type Props = Shared & {active: boolean; startEditRequest: number; consumeEdit: () => void};
+const outputLinks = [
+  {key: 'plan', name: '活动策划', href: '#planning/plan'},
+  {key: 'agenda', name: '活动日程', href: '#planning/agenda'},
+  {key: 'risks', name: '风险预案', href: '#planning/risks'},
+  {key: 'copy', name: '宣传文案', href: '#copy'},
+  {key: 'review', name: '方案审阅', href: '#review'},
+] as const;
+
+function localDateKey(date: Date) {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return [date.getFullYear(), pad(date.getMonth() + 1), pad(date.getDate())].join('-');
+}
+function lastUpdated(value: string) {
+  const date = new Date(value);
+  return date.toLocaleString('zh-CN', {month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'});
+}
+
+export function Overview({state, change, notify, active, startEditRequest, consumeEdit}: Props) {
+  const [editing, setEditing] = useState(false);
+  useEffect(() => {
+    if (!active) setEditing(false);
+    else if (startEditRequest > 0) {setEditing(true); consumeEdit()}
+  }, [active, startEditRequest, consumeEdit]);
+  const {project, tasks, budget, documents, outputs} = state;
+  const today = localDateKey(new Date());
+  const pending = tasks.filter(t => t.status !== 'done').sort((a, b) => (a.due || '9999-12-31').localeCompare(b.due || '9999-12-31'));
+  const overdue = pending.filter(t => t.due && t.due < today).length;
+  const done = tasks.length - pending.length;
+  const progress = tasks.length ? Math.round(done / tasks.length * 100) : 0;
+  const expensePercent = project.budget_limit > 0 ? Math.min(100, budget.total / project.budget_limit * 100) : budget.total > 0 ? 100 : 0;
+  const savedOutputs = outputLinks.filter(link => outputs[link.key]).length;
+
+  return <div className="desk-overview">
+    <section className="event-banner">
+      <div className="event-intro">
+        <h1 className="workspace-view-title">活动总览</h1>
+        <h2>{project.name}</h2><p>{project.goal}</p>
+        <div className="event-meta">
+          <span><Icon name="planning" size={16}/><time dateTime={project.date}>{project.date.replace(/-/g, '.')}</time></span>
+          <span><Icon name="pin" size={16}/>{project.location}</span>
+          <span><Icon name="users" size={16}/>{project.attendees} 人</span>
+        </div>
+      </div>
+      <Button variant="secondary" icon="edit" onClick={() => setEditing(true)}>编辑活动</Button>
+    </section>
+    <div className="desk-stats">
+      <a href="#tasks"><span>任务完成率</span><strong>{progress}<small>%</small></strong><em>{done} / {tasks.length} 项已完成</em></a>
+      <a href={overdue ? '#tasks/overdue' : '#tasks'} className={overdue ? 'attention' : ''}><span>{overdue ? '已逾期任务' : '待推进任务'}</span><strong>{overdue || pending.length}<small>项</small></strong><em>{overdue ? '查看逾期事项' : '打开任务看板'} ↗</em></a>
+      <a href="#documents"><span>活动资料</span><strong>{documents.length}<small>份</small></strong><em>查阅原文 ↗</em></a>
+      <a href="#review"><span>已保存草案</span><strong>{savedOutputs}<small>/ {outputLinks.length}</small></strong><em>审阅与导出 ↗</em></a>
+    </div>
+    <div className="overview-grid">
+      <section className="panel upcoming">
+        <div className="panel-heading"><div><h2>近期任务</h2><p>按截止日期排列</p></div><a className="text-button" href="#tasks">查看全部 <Icon name="arrow" size={15}/></a></div>
+        <div className="task-list">
+          {pending.slice(0, 4).map(t => <a className="task-row" key={t.id} href={'#tasks/' + encodeURIComponent(t.id)}>
+            <span className={'task-marker ' + t.status}><Icon name={t.status === 'doing' ? 'clock' : 'tasks'} size={18}/></span>
+            <span className="task-row-title"><strong>{t.title}</strong><small>{t.owner || '待分配负责人'} · {shortDate(t.due)}{t.due === today && ' · 今天到期'}</small></span>
+            <StatusBadge status={t.status}/><Icon name="chevron" size={15}/>
+          </a>)}
+          {!pending.length && <div className="compact-empty">{tasks.length ? '全部任务已完成。' : '还没有执行任务。'} <a className="text-button" href={tasks.length ? '#review' : '#tasks'}>{tasks.length ? '审阅方案' : '打开看板添加任务'} ↗</a></div>}
+        </div>
+      </section>
+      <section className="panel budget-overview">
+        <div className="panel-heading"><div><h2>预算概况</h2><p>含已保存的预备金</p></div><a className="text-button" href="#budget">管理明细 <Icon name="arrow" size={15}/></a></div>
+        <div className="budget-total"><small>预计支出</small><strong>{money(budget.total)}</strong><span>预算上限 {money(project.budget_limit)}</span></div>
+        <div className="budget-line"><div className={budget.remaining < 0 ? 'over' : ''} style={{width: expensePercent + '%'}}/></div>
+        <div className={'budget-remaining' + (budget.remaining < 0 ? ' negative' : '')}><span>{budget.remaining < 0 ? '已超出预算' : '剩余可用'}</span><strong>{money(Math.abs(budget.remaining))}</strong></div>
+      </section>
+    </div>
+    <div className="overview-bottom">
+      <section className="panel desk-drafts"><div className="panel-heading"><div><h2>活动草案</h2><p>打开已有内容，或开始第一版</p></div></div>
+        <ul>{outputLinks.map(link => <li key={link.key}><a href={link.href}>
+          <Icon name={link.key === 'copy' ? 'copy' : link.key === 'review' ? 'review' : 'planning'} size={17}/>
+          <strong>{link.name}</strong><small>{outputs[link.key] ? lastUpdated(outputs[link.key]!.created_at) : '待生成'}</small><Icon name="chevron" size={14}/>
+        </a></li>)}</ul>
+      </section>
+      <section className="panel activity-panel"><div className="panel-heading"><div><h2>最近动态</h2><p>最近三次已保存的操作</p></div></div>
+        <ol className="activity-list">{state.activity.slice(0, 3).map(a => <li key={a.id}><span className="activity-dot"/><div><strong>{a.action}</strong><p>{a.detail}</p></div><time dateTime={a.created_at}>{lastUpdated(a.created_at)}</time></li>)}</ol>
+        {!state.activity.length && <p className="compact-empty">暂时没有操作记录。</p>}
+      </section>
+    </div>
+    {active && editing && <ProjectEditor state={state} change={change} notify={notify} close={() => setEditing(false)}/>}
+  </div>;
+}
